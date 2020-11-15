@@ -7,16 +7,16 @@ import math
 
 
 #kp1 = 1
-kp2 = 3
-kp3 = 0.5
+kp2 = 0.01
+kp3 = 0.3
 
 #ki1 = 1
-ki2 = 3
-ki3 = 0.015
+ki2 = 0.001
+ki3 = 0.01
 
 #kd1 = 1
-kd2 = 3
-kd3 = 0.02
+kd2 = 0.01
+kd3 = 0.03
 
 odom = Odometry()
 scan = LaserScan()

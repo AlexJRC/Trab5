@@ -51,6 +51,7 @@ def timerCallBack(event):
     erro3=0
     state = 'state1'
     msg = Twist()
+    control2 = 0
     '''
     if state == 'initial':
         setpoint1 = 2.683991025         #,1.887759912) talvez seta um pouco pra tras de jeito

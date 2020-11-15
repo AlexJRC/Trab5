@@ -11,7 +11,7 @@ kp2 = 0.01
 kp3 = 1
 
 #ki1 = 1
-ki2 = 0.0001
+ki2 = 0.001
 ki3 = 0.01
 
 #kd1 = 1
@@ -24,6 +24,9 @@ scan = LaserScan()
 rospy.init_node('cmd_node')
 
 # Auxiliar functions ------------------------------------------------
+
+
+
 def getAngle(msg):
     quaternion = msg.pose.pose.orientation
     quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]

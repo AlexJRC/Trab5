@@ -116,6 +116,6 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 odom_sub = rospy.Subscriber('/odom', Odometry, odomCallBack)
 scan_sub = rospy.Subscriber('/scan', LaserScan, scanCallBack)
 
-timer = rospy.Timer(rospy.Duration(0.38), timerCallBack)
+timer = rospy.Timer(rospy.Duration(0.04), timerCallBack)
 
 rospy.spin()

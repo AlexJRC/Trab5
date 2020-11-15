@@ -68,7 +68,7 @@ def timerCallBack(event):
 		
         print('Buscando...')
        
-        if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
+        if min(scan.ranges[scan_len-10 : scan_len+]) < 100:
             print ("AAA")
             state = 'state2'
             msg.angular.z = 0
@@ -116,6 +116,6 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 odom_sub = rospy.Subscriber('/odom', Odometry, odomCallBack)
 scan_sub = rospy.Subscriber('/scan', LaserScan, scanCallBack)
 
-timer = rospy.Timer(rospy.Duration(0.05), timerCallBack)
+timer = rospy.Timer(rospy.Duration(0.38), timerCallBack)
 
 rospy.spin()

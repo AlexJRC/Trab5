@@ -68,7 +68,7 @@ def timerCallBack(event):
 		
         print('Buscando...')
        
-        if min(scan.ranges[scan_len-10 : scan_len+]) < 100:
+        if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
             print ("AAA")
             state = 'state2'
             msg.angular.z = 0

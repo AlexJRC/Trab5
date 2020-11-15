@@ -43,6 +43,7 @@ def scanCallBack(msg):
 
 # TIMER - Control Loop ----------------------------------------------
 def timerCallBack(event):
+    control2 = 0
     erro1=0
     I1=0
     I2=0
@@ -51,37 +52,11 @@ def timerCallBack(event):
     erro3=0
     state = 'state1'
     msg = Twist()
-    control2 = 0
-    '''
-    if state == 'initial':
-        setpoint1 = 2.683991025         #,1.887759912) talvez seta um pouco pra tras de jeito
-        
-        position = odom.pose.pose.position
-        dist = setpoint1 - position.x #math.sqrt((setpoint[0] - position.x)**2 + (setpoint[1] - position.y) **2)
-        error1 = dist
-        
-        P1 = kp1*error1
-        I1 = ki1*error1 + I1 #ki1*error1
-        D1 = kd1*(error1 - erro1)
-        control1 = P1+I1+D1
-        erro1 = error1
-        
-        
-        
-        if control1>1:
-            control1 = 1
-        elif control1 < -1:
-            control1 = -1
-        print(state)
-        msg.linear.x = control1
-        state = 'state1'
-        
-    '''    
     yaw = getAngle(odom)
     scan_len = len(scan.ranges)
 	
-    print (scan_len)
-    print (yaw)
+    print ("Tamanho: ", scan_len)
+    print ("Angulo lido: ", yaw)
 	
     if not(scan_len > 0):
         control2 = 0
@@ -93,27 +68,11 @@ def timerCallBack(event):
 		
         print('Buscando...')
        
-        msg.angular.z = 1
         if min(scan.ranges[scan_len-5 : scan_len+5]) < 100:
             print ("AAA")
+            state = 'state2'
             msg.angular.z = 0
-            point= min (scan.ranges[scan_len-10 : scan_len+10]) 
-            print ("point")
-            print(point)
-			#interpolando
-            setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
-            error2 = (setpoint2 - yaw)
-    
-            if abs(error2) > 180:
-                if setpoint2 < 0:
-                    error2 += 360 
-                else:
-                    error2 -= 360
-            P2 = kp2*error2
-            I2 = ki2*error2 + I2 #ki1*error1
-            D2 = kd2*(error2 - erro2)
-            control2 = P2+I2+D2
-            erro2 = error2 
+             
 				
         else:	
             if min(scan.ranges[scan_len-15 : scan_len+15]) < 100:
@@ -121,49 +80,8 @@ def timerCallBack(event):
                 msg.angular.z = 0.3*0.5
             else:
                 msg.angular.z = 0.3
-        '''
-		if scan_len > 0:
-        
-            if min(scan.ranges[scan_len-5 : scan_len+5]) < 100:
-                print ("SOCOROO")
-                
-                msg.angular.z = 0
-                point = min (scan.ranges[scan_len-10 : scan_len+10]) 
-                #interpolando
-                setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
-                error2 = (setpoint2 - yaw)
-    
-                if abs(error2) > 180:
-                    if setpoint2 < 0:
-                        error2 += 360 
-                    else:
-                        error2 -= 360
-                P2 = kp2*error2
-                I2 = ki2*error2 + I2 #ki1*error1
-                D2 = kd2*(error2 - erro2)
-                control2 = P2+I2+D2
-                erro2 = error2 
-            
-            else:
-                print ("AAAAAAAAAAAAAA")
-                if min(scan.ranges[scan_len-15 : scan_len+15]) < 100:
-                    msg.angular.z = 0.3*0.5
-                    
-                else:
-                    msg.angular.z = 3
-                    print ("virei nada")
-        '''    
-            
-                
-                    
-        
-        #else:
-            #control2 = 0
-            #print ("zero")
-        print ("fiz nd")
-        msg.angular.z = control2
-        
-        state = 'state2'
+           
+       
                     
     elif state == 'state2':
         setpoint3 = 0.5

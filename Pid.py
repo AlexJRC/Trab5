@@ -68,10 +68,26 @@ def timerCallBack(event):
 		
         print('Buscando...')
        
-        if min(scan.ranges[scan_len-5 : scan_len+5]) < 100:
+        if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
             print ("AAA")
-            state = 'state2'
             msg.angular.z = 0
+            point = min (scan.ranges[scan_len-10 : scan_len+10])
+            setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
+            print (setpoint2)
+            error2 = (setpoint2 - yaw)
+            if abs(error2) > 180:
+                if setpoint2 < 0:
+                    error2 += 360 
+                else:
+                    error2 -= 360
+            P2 = kp2*error2
+            I2 = ki2*error2 + I2 #ki1*error1
+            D2 = kd2*(error2 - erro2)
+            control2 = P2+I2+D2
+            erro2 = error2
+            msg.angular.z = control2
+            state = 'state2'
+            
              
 				
         else:	
@@ -85,8 +101,8 @@ def timerCallBack(event):
                     
     if state == 'state2':
         setpoint3 = 0.5
+    
         scan_len = len(scan.ranges)
-        print (scan_len)
         if scan_len > 0:
             read = min(scan.ranges[scan_len-10 : scan_len+10])
 
@@ -116,6 +132,6 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 odom_sub = rospy.Subscriber('/odom', Odometry, odomCallBack)
 scan_sub = rospy.Subscriber('/scan', LaserScan, scanCallBack)
 
-timer = rospy.Timer(rospy.Duration(0.04), timerCallBack)
+timer = rospy.Timer(rospy.Duration(0.05), timerCallBack)
 
 rospy.spin()

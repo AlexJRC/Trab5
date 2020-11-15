@@ -7,7 +7,7 @@ import math
 
 
 #kp1 = 1
-kp2 = 2
+kp2 = 1
 kp3 = 0.5
 
 #ki1 = 1

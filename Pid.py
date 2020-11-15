@@ -83,7 +83,7 @@ def timerCallBack(event):
            
        
                     
-    elif state == 'state2':
+    if state == 'state2':
         setpoint3 = 0.5
         scan_len = len(scan.ranges)
         print (scan_len)

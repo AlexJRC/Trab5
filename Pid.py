@@ -16,7 +16,7 @@ ki3 = 0.01
 
 #kd1 = 1
 kd2 = 0.01
-kd3 = 1
+kd3 = 0.1s
 
 odom = Odometry()
 scan = LaserScan()

@@ -85,8 +85,8 @@ def timerCallBack(event):
                     
     elif state == 'state2':
         setpoint3 = 0.5
-    
         scan_len = len(scan.ranges)
+        print (scan_len)
         if scan_len > 0:
             read = min(scan.ranges[scan_len-10 : scan_len+10])
 

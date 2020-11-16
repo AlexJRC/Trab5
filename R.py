@@ -25,21 +25,21 @@ def timer (mat): #Recebe a matricula e calcula a soma
     global matricula
     n = len(mat)
     resultado = 0
-	media = 0
-	freq = 0;
-	time = 0;
+    media = 0
+    freq = 0
+    time = 0
 	
     for matricula in mat:
         resultado = 0
-		for x in str matricula
-			resultado += int(x)
-			media = media+resultado
-	media = media/n
-	freq = media
-	time = 1/freq
-	return time
+        for x in str (matricula):
+            resultado += int(x)
+            media = media+resultado
+    media = media/n
+    freq = media
+    time = 1/freq
+    return time
     
-time = timer(mat)    
+time = timer(mat)
 
 def getAngle(msg):
     quaternion = msg.pose.pose.orientation
@@ -78,8 +78,7 @@ def timerCallBack(event):
         control2 = 0
         msg.linear.x = 0
 			
-    else
-        if state == 'state1':
+    elif state == 'state1':
 	      
             if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
            
@@ -108,7 +107,7 @@ def timerCallBack(event):
             state = 'state2'   
        
                     
-        if state == 'state2':
+    if state == 'state2':
             setpoint3 = 0.5
     
             scan_lenp = len(scan.ranges)

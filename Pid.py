@@ -5,18 +5,18 @@ from sensor_msgs.msg import LaserScan
 import tf
 import math
 
-
+mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
 #kp1 = 1
 kp2 = 0.01
 kp3 = 1
 
 #ki1 = 1
-ki2 = 0.001
+ki2 = 0.0001
 ki3 = 0.01
 
 #kd1 = 1
 kd2 = 0.01
-kd3 = 0.1
+kd3 = 1
 
 
 odom = Odometry()
@@ -34,6 +34,27 @@ def getAngle(msg):
     euler = tf.transformations.euler_from_quaternion(quat)
     yaw = euler[2]*180.0/math.pi
     return yaw
+
+def timer (mat): #Recebe a matricula e calcula a soma
+    global matricula
+    n = len(mat)
+    resultado = 0
+    media = 0
+    freq = 0
+    time = 0
+	
+    for matricula in mat:
+        resultado = 0
+        for x in str (matricula):
+            resultado += int(x)
+            media = media+resultado
+    media = media/n
+    freq = media
+    time = 1/freq
+    return time
+    
+time = timer(mat)
+
 
 # CALLBACKS --------------------------------------------------------
 def odomCallBack(msg):

@@ -73,7 +73,7 @@ def timerCallBack(event):
 	
 
 	
-    if (scan_len < 0):
+    if not (scan_len > 0):
         control2 = 0
         msg.linear.x = 0
 			

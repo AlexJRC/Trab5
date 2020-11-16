@@ -147,8 +147,8 @@ def timerCallBack(event):
             else:
                 control3 = 0        
         
-        print (state)
-        msg.linear.x = control3
+            print (state)
+            msg.linear.x = control3
         
   
     pub.publish(msg)

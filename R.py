@@ -87,8 +87,7 @@ def timerCallBack(event):
         control2 = 0
         msg.linear.x = 0
 			
-    else:
-        if state == 'state1':
+    elif state == 'state1':
 	
     # POSICIONA DIRECAO ---------------------------------   
 		
@@ -111,7 +110,8 @@ def timerCallBack(event):
                 D2 = kd2*(error2 - erro2)
                 control2 = P2+I2+D2
                 erro2 = error2
-                    
+                msg.angular.z = control2
+                state = 'state2'
                 
              
 				
@@ -121,11 +121,10 @@ def timerCallBack(event):
                     msg.angular.z = 0.3*0.5
                 else:
                     msg.angular.z = 0.3
-            msg.angular.z = control2
-            state = 'state2'
+           
        
                     
-        if state == 'state2':
+    if state == 'state2':
             setpoint3 = 0.5
         
             scan_len = len(scan.ranges)

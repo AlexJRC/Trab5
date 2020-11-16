@@ -67,7 +67,7 @@ def scanCallBack(msg):
 # TIMER - Control Loop ----------------------------------------------
 def timerCallBack(event):
 
-#DEFINIÇÃO DE VARIAVEIS    
+#DEFINICAO DE VARIAVEIS    
     I_ang = 0
     I = 0
     msg = Twist()

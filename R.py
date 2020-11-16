@@ -23,7 +23,7 @@ rospy.init_node('cmd_node')
 
 # Auxiliar functions ------------------------------------------------
 
-#FUNÇÃO PARA ACHAR A FREQUENCIA DO TIMER
+#FUNCAO PARA ACHAR A FREQUENCIA DO TIMER
 
 def loop_timer_CallBack (V_Mat): 
     global mat

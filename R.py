@@ -25,16 +25,6 @@ scan = LaserScan()
 rospy.init_node('cmd_node')
 
 # Auxiliar functions ------------------------------------------------
-
-
-
-def getAngle(msg):
-    quaternion = msg.pose.pose.orientation
-    quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
-    euler = tf.transformations.euler_from_quaternion(quat)
-    yaw = euler[2]*180.0/math.pi
-    return yaw
-
 def timer (mat): #Recebe a matricula e calcula a soma
     global matricula
     n = len(mat)
@@ -54,6 +44,16 @@ def timer (mat): #Recebe a matricula e calcula a soma
     return time
     
 time = timer(mat)
+
+
+def getAngle(msg):
+    quaternion = msg.pose.pose.orientation
+    quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+    euler = tf.transformations.euler_from_quaternion(quat)
+    yaw = euler[2]*180.0/math.pi
+    return yaw
+
+
 
 
 # CALLBACKS --------------------------------------------------------

@@ -5,19 +5,16 @@ from sensor_msgs.msg import LaserScan
 import tf
 import math
 
-mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
-#kp1 = 1
-kp2 = 0.01
-kp3 = 1
+V_Mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
 
-#ki1 = 1
-ki2 = 0.0001
-ki3 = 0.01
 
-#kd1 = 1
-kd2 = 0.01
-kd3 = 1
+kp_ang = 0.01
+ki_ang = 0.0001
+kd_ang = 0.01
 
+kp = 1
+ki = 0.01
+kd = 1
 
 odom = Odometry()
 scan = LaserScan()
@@ -25,36 +22,37 @@ scan = LaserScan()
 rospy.init_node('cmd_node')
 
 # Auxiliar functions ------------------------------------------------
-def timer (mat): #Recebe a matricula e calcula a soma
-    global matricula
-    n = len(mat)
-    resultado = 0
-    media = 0
-    freq = 0
-    time = 0
+
+#FUNÇÃO PARA ACHAR A FREQUENCIA DO TIMER
+
+def loop_timer_CallBack (V_Mat): 
+    global mat
+    n = len(V_Mat)
+    res_each = 0
+    m = 0
+    f = 0
+    t = 0
 	
-    for matricula in mat:
-        resultado = 0
-        for x in str (matricula):
-            resultado += int(x)
-            media = media+resultado
-    media = media/n
-    freq = media
-    time = 1/freq
-    return time
+    for mat in V_Mat:
+        res_each = 0
+        for x in str (mat):
+            res_each = res_each + int(x)
+            m = m+res_each
+    m = m/n
+    f = m
+    t = 1/f
+    return t
     
-time = timer(mat)
+tempo_loop = loop_timer_CallBack(V_Mat)
 
 
+# OBTER ANGULO EM GRAU
 def getAngle(msg):
     quaternion = msg.pose.pose.orientation
     quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
     euler = tf.transformations.euler_from_quaternion(quat)
     yaw = euler[2]*180.0/math.pi
     return yaw
-
-
-
 
 # CALLBACKS --------------------------------------------------------
 def odomCallBack(msg):
@@ -68,86 +66,91 @@ def scanCallBack(msg):
 
 # TIMER - Control Loop ----------------------------------------------
 def timerCallBack(event):
-    control2 = 0
-    erro1=0
-    I1=0
-    I2=0
-    I3=0
-    erro2=0
-    erro3=0
-    state = 'state1'
+
+#DEFINIÇÃO DE VARIAVEIS    
+    I_ang = 0
+    I = 0
     msg = Twist()
     yaw = getAngle(odom)
     scan_len = len(scan.ranges)
-	
-    print ("Tamanho: ", scan_len)
-    print ("Angulo lido: ", yaw)
-	
+# ERRO ANTERIOR INICIALIZADOS COMO NULO    
+    p_erro_ang =0
+    p_erro =0
+    control_ang = 0
+
+#ESTADO INICIAL BUSCA ANGULO QUE O ROBO DEVE IR    
+    estado = 'Angulo'
+     
     if not(scan_len > 0):
-        control2 = 0
+        control_ang = 0
         msg.linear.x = 0
 			
-    elif state == 'state1':
-	
-    # POSICIONA DIRECAO ---------------------------------   
-		
-            print('Buscando...')
+    elif estado == 'Angulo':
+       
+        if min(scan.ranges[scan_len-10 : scan_len+10]) < 100: # encontrou objeto
            
-            if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
-                print ("AAA")
-                msg.angular.z = 0
-                point = min (scan.ranges[scan_len-10 : scan_len+10])
-                setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
-                print (setpoint2)
-                error2 = (setpoint2 - yaw)
-                if abs(error2) > 180:
-                    if setpoint2 < 0:
-                        error2 += 360 
-                    else:
-                        error2 -= 360
-                P2 = kp2*error2
-                I2 = ki2*error2 + I2 #ki1*error1
-                D2 = kd2*(error2 - erro2)
-                control2 = P2+I2+D2
-                erro2 = error2
-                msg.angular.z = control2
-                state = 'state2'
-                
+            msg.angular.z = 0
+            
+            dir_obj = min (scan.ranges[scan_len-10 : scan_len+10])
+            
+            setpoint_ang = (dir_obj - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]) #interpolacao
+            setpoint_ang *= 200 #interpolacao
+            setpoint_ang -= 100 #interpolacao
+            
+            error_ang = (setpoint_ang - yaw) #ref - y
+            
+            if abs(error_ang) > 180:
+                if setpoint_ang < 0:
+                    error_ang += 360 
+                else:
+                    error_ang -= 360
+                    
+            P_ang = kp_ang*error_ang #parte proporcional
+            I_ang = I_ang + ki_ang*error_ang  #parte integrativa
+            D_ang = (error_ang - p_erro_ang)*kd_ang #parte derivativa
+            
+            control_ang = P_ang + I_ang + D_ang
+            p_erro_ang = error_ang #erro atual passa ser antigo na proxima vez
+            
+            msg.angular.z = control_ang
+            estado = 'Distancia' 
+            
              
 				
-            else:	
-                if min(scan.ranges[scan_len-15 : scan_len+15]) < 100:
-                    print ("gira inferno")
-                    msg.angular.z = 0.3*0.5
-                else:
-                    msg.angular.z = 0.3
+        else:	
+            if min(scan.ranges[scan_len-15 : scan_len+15]) < 100: #se nao enncontrou o objeto roda ate achar
+                
+                msg.angular.z = 0.15
+            else:
+                msg.angular.z = 0.3
            
        
                     
-    if state == 'state2':
-            setpoint3 = 0.5
-        
-            scan_len = len(scan.ranges)
-            if scan_len > 0:
-                read = min(scan.ranges[scan_len-10 : scan_len+10])
+    if estado == 'Distancia':
+        setpoint = 0.5 # 50 cm do objeto
     
-                error3 = -(setpoint3 - read)
-            
-                P3 = kp3*error3
-                I3 = ki3*error3 + I3 #ki1*error1
-                D3 = kd3*(error3 - erro3)
-                control3 = P3+I3+D3
-                erro3 = error3
-                    
-                if control3 > 1:
-                    control3 = 1
-                elif control3 < -1:
-                    control3 = -1
-            else:
-                control3 = 0        
+        scan_len = len(scan.ranges)
+        if scan_len > 0:
+            real_dist = min(scan.ranges[scan_len-10 : scan_len+10])
+
+            error = -(setpoint - real_dist)
         
-            print (state)
-            msg.linear.x = control3
+            P = kp*error #parte proporcional
+            I = I + ki*error  #parte integrativa
+            D = (error - p_erro)*kd # parte derivativa
+            
+            control = P+I+D
+            erro = p_erro #erro atual sera proximo antigo
+                
+            if control > 1:
+                control = 1
+            elif control < -1:
+                control = -1
+        else:
+            control = 0        
+        
+       
+        msg.linear.x = control
         
   
     pub.publish(msg)

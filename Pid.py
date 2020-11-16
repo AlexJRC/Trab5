@@ -25,22 +25,21 @@ def timer (mat): #Recebe a matricula e calcula a soma
     global matricula
     n = len(mat)
     resultado = 0
-	media = 0
-	freq = 0;
-	time = 0;
+    media = 0
+    freq = 0
+    time = 0
 	
     for matricula in mat:
         resultado = 0
-		for x in str matricula
-			resultado += int(x)
-			media = media+resultado
-	media = media/n
-	freq = media
-	time = 1/freq
-	return time
+        for x in str (matricula):
+            resultado += int(x)
+            media = media+resultado
+    media = media/n
+    freq = media
+    time = 1/freq
+    return time
     
-time = timer(mat)    
-
+time = timer(mat)
 def getAngle(msg):
     quaternion = msg.pose.pose.orientation
     quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]

@@ -5,7 +5,7 @@ from sensor_msgs.msg import LaserScan
 import tf
 import math
 
-mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
+mat = [2017004555, 2016001094, 20166001960, 28090]
 #kp1 = 1
 kp2 = 0.01
 kp3 = 1
@@ -157,6 +157,6 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 odom_sub = rospy.Subscriber('/odom', Odometry, odomCallBack)
 scan_sub = rospy.Subscriber('/scan', LaserScan, scanCallBack)
 
-timer = rospy.Timer(rospy.Duration(0.05), timerCallBack)
+timer = rospy.Timer(rospy.Duration(time), timerCallBack)
 
 rospy.spin()

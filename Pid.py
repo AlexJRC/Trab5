@@ -77,7 +77,7 @@ def timerCallBack(event):
         control2 = 0
         msg.linear.x = 0
 			
-    else
+    else:
         if state == 'state1':
 	      
             if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:

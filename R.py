@@ -5,7 +5,7 @@ from sensor_msgs.msg import LaserScan
 import tf
 import math
 
-
+mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
 #kp1 = 1
 kp2 = 0.01
 kp3 = 1
@@ -18,13 +18,23 @@ ki3 = 0.01
 kd2 = 0.01
 kd3 = 1
 
-mat = [2018000309, 2016006869, 2017009838, 34219,  2017003253]
+
 odom = Odometry()
 scan = LaserScan()
 
 rospy.init_node('cmd_node')
 
 # Auxiliar functions ------------------------------------------------
+
+
+
+def getAngle(msg):
+    quaternion = msg.pose.pose.orientation
+    quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
+    euler = tf.transformations.euler_from_quaternion(quat)
+    yaw = euler[2]*180.0/math.pi
+    return yaw
+
 def timer (mat): #Recebe a matricula e calcula a soma
     global matricula
     n = len(mat)
@@ -44,14 +54,7 @@ def timer (mat): #Recebe a matricula e calcula a soma
     return time
     
 time = timer(mat)
-   
 
-def getAngle(msg):
-    quaternion = msg.pose.pose.orientation
-    quat = [quaternion.x, quaternion.y, quaternion.z, quaternion.w]
-    euler = tf.transformations.euler_from_quaternion(quat)
-    yaw = euler[2]*180.0/math.pi
-    return yaw
 
 # CALLBACKS --------------------------------------------------------
 def odomCallBack(msg):
@@ -85,7 +88,10 @@ def timerCallBack(event):
         msg.linear.x = 0
 			
     elif state == 'state1':
-	      
+	
+    # POSICIONA DIRECAO ---------------------------------   
+		
+        print('Buscando...')
        
         if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
             print ("AAA")
@@ -151,6 +157,6 @@ pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 odom_sub = rospy.Subscriber('/odom', Odometry, odomCallBack)
 scan_sub = rospy.Subscriber('/scan', LaserScan, scanCallBack)
 
-timer = rospy.Timer(rospy.Duration(time), timerCallBack)
+timer = rospy.Timer(rospy.Duration(0.05), timerCallBack)
 
 rospy.spin()

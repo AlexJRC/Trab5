@@ -87,32 +87,33 @@ def timerCallBack(event):
         control2 = 0
         msg.linear.x = 0
 			
-    elif state == 'state1':
+    else:
+        if state == 'state1':
 	
     # POSICIONA DIRECAO ---------------------------------   
 		
-        print('Buscando...')
-       
-        if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
-            print ("AAA")
-            msg.angular.z = 0
-            point = min (scan.ranges[scan_len-10 : scan_len+10])
-            setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
-            print (setpoint2)
-            error2 = (setpoint2 - yaw)
-            if abs(error2) > 180:
-                if setpoint2 < 0:
-                    error2 += 360 
-                else:
-                    error2 -= 360
-            P2 = kp2*error2
-            I2 = ki2*error2 + I2 #ki1*error1
-            D2 = kd2*(error2 - erro2)
-            control2 = P2+I2+D2
-            erro2 = error2
-            msg.angular.z = control2
-            state = 'state2'
-            
+            print('Buscando...')
+           
+            if min(scan.ranges[scan_len-10 : scan_len+10]) < 100:
+                print ("AAA")
+                msg.angular.z = 0
+                point = min (scan.ranges[scan_len-10 : scan_len+10])
+                setpoint2 = (200*((point - scan.ranges[0])/(scan.ranges[scan_len-1] - scan.ranges[0]))) - 100
+                print (setpoint2)
+                error2 = (setpoint2 - yaw)
+                if abs(error2) > 180:
+                    if setpoint2 < 0:
+                        error2 += 360 
+                    else:
+                        error2 -= 360
+                P2 = kp2*error2
+                I2 = ki2*error2 + I2 #ki1*error1
+                D2 = kd2*(error2 - erro2)
+                control2 = P2+I2+D2
+                erro2 = error2
+                msg.angular.z = control2
+                state = 'state2'
+                
              
 				
         else:	
@@ -124,27 +125,27 @@ def timerCallBack(event):
            
        
                     
-    if state == 'state2':
-        setpoint3 = 0.5
-    
-        scan_len = len(scan.ranges)
-        if scan_len > 0:
-            read = min(scan.ranges[scan_len-10 : scan_len+10])
-
-            error3 = -(setpoint3 - read)
+        if state == 'state2':
+            setpoint3 = 0.5
         
-            P3 = kp3*error3
-            I3 = ki3*error3 + I3 #ki1*error1
-            D3 = kd3*(error3 - erro3)
-            control3 = P3+I3+D3
-            erro3 = error3
-                
-            if control3 > 1:
-                control3 = 1
-            elif control3 < -1:
-                control3 = -1
-        else:
-            control3 = 0        
+            scan_len = len(scan.ranges)
+            if scan_len > 0:
+                read = min(scan.ranges[scan_len-10 : scan_len+10])
+    
+                error3 = -(setpoint3 - read)
+            
+                P3 = kp3*error3
+                I3 = ki3*error3 + I3 #ki1*error1
+                D3 = kd3*(error3 - erro3)
+                control3 = P3+I3+D3
+                erro3 = error3
+                    
+                if control3 > 1:
+                    control3 = 1
+                elif control3 < -1:
+                    control3 = -1
+            else:
+                control3 = 0        
         
         print (state)
         msg.linear.x = control3

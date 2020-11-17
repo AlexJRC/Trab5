@@ -48,7 +48,7 @@ def timer (mat): #Recebe a matricula e calcula a soma
         for x in str (matricula):
             resultado += int(x)
             media = media+resultado
-    media = media/n
+    média = float(media)/n
     freq = media
     time = 1/freq
     return time
